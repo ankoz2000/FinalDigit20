@@ -128,10 +128,15 @@ def geophone(message):
         bot.register_next_step_handler(message, invite)
 
     def invite(message):
-        res = summarize / QUESION_QUANTITY * 100 - 10
-        string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе. Результат: {}%. '.format(res*10)
-        string += 'Пришли свое местоположение, я скажу, насколько далеко ты от ближайшего офиса'
-        bot.send_message(message.chat.id, string, reply_markup=keyboard_geo)
+        res = summarize / QUESION_QUANTITY * 100
+        if res > 79:
+            string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе. Результат: {}%. '.format(res*10)
+            string += 'Пришли свое местоположение, я скажу, насколько далеко ты от ближайшего офиса'
+            bot.send_message(message.chat.id, string, reply_markup=keyboard_geo)
+        else:
+            string = 'Результат: {}%. Попытайся ещё раз'.format(res*10)
+            bot.send_message(message.chat.id, string, reply_markup=keyboard_return)
+
 
     if (message.text.lower() == 'да'):
         summarize += 1
