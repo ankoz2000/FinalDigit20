@@ -4,7 +4,6 @@ import requests
 from telebot import types
 from geopy.geocoders import Nominatim, ArcGIS
 from analyze import countDistance
-from user import User, UserVar
 import res.strings as S
 
 def txt_reader(file_path):
@@ -30,7 +29,6 @@ def changeAnswerType(n):
         typeAns = 0 #  start Question
     if n == 4:
         typeAns = 4
-    print(typeAns)
     return
 
 questions = txt_reader('./res/quest/questions.txt')
@@ -86,10 +84,10 @@ def show(message):
 
 
 @bot.message_handler(content_types=['text'])
+def geophone(message):
+    typeAns = 1
     summarize = 0
-    def geophone(message):
-        def age(message):
-        summarize = 0.0
+    def age(message):
         bot.send_message(message.chat.id, questions[0], reply_markup=keyboard2)
         bot.register_next_step_handler(message, sex)
 
@@ -131,15 +129,14 @@ def show(message):
 
     def invite(message):
         res = summarize / QUESION_QUANTITY * 100 - 10
-        string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе. Результат: {}'.format(res)
+        string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе. Результат: {}%. '.format(res*10)
         string += 'Пришли свое местоположение, я скажу, насколько далеко ты от ближайшего офиса'
         bot.send_message(message.chat.id, string, reply_markup=keyboard_geo)
 
-
-    keyboard = types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
     if (message.text.lower() == 'да'):
         summarize += 1
-
+        if typeAns == 1:
+            age(message)
     elif message.text.replace('-', '') == '2126':
         summarize += 1
     
