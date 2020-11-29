@@ -32,6 +32,7 @@ questions = txt_reader('./res/quest/questions.txt')
 
 bot = telebot.TeleBot(config.token)
 
+button_phone     = types.KeyboardButton(text="Отправить телефон", request_contact=True)
 btn_return       = types.KeyboardButton(text=S.GO_TO_MAIN_MENU)
 button_geo       = types.KeyboardButton(text=S.SEND_LOCATION, request_location=True)
 
@@ -45,11 +46,15 @@ keyboard6        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboar
 keyboard7        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard8        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard_geo     = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+keyboard_tel     = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard_return  = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard11        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 
 keyboard_geo.add(button_geo)
 keyboard_geo.add(btn_return)
+
+keyboard_tel.add(button_phone)
+keyboard_tel.add(btn_return)
 
 keyboard1.row(S.YES, S.NO)
 keyboard1.row(S.GO_TO_MAIN_MENU)
@@ -154,6 +159,7 @@ def geophone(message):
             string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе.'
             string += 'Пришли свое местоположение, я скажу, насколько далеко ты от ближайшего офиса'
             bot.send_message(message.chat.id, string, reply_markup=keyboard_geo)
+            
 
     if (message.text.lower() == 'да'):
         if typeAns == 1:
@@ -161,6 +167,16 @@ def geophone(message):
     elif message.text.lower() == S.GO_TO_MAIN_MENU.lower():
         start_message(message)
 
+@bot.message_handler(content_types=['contact'])
+def contact(message):
+    print(message.contact)
+    if message.contact is not None:
+        doc = open('user_tel.txt', 'w')
+        doc.write("{name}, {telephone}\n".format(name=message.contact.first_name, telephone=message.contact.phone_number))
+        doc.close()
+        string = "Благодарим за обратную связь!"
+        bot.send_message(message.chat.id, string)
+    
 
 @bot.message_handler(content_types=['location'])
 def getLocation(message):
@@ -171,6 +187,6 @@ def getLocation(message):
         distance = km
         string = "Ближайший офис находится в %d километров от тебя" % distance
         bot.send_message(message.chat.id, string)
-
+        bot.send_message(message.chat.id, 'Поделитесь с нами Вашим номером телефона', reply_markup=keyboard_tel)
 
 bot.polling()
