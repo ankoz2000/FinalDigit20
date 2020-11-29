@@ -13,9 +13,6 @@ def txt_reader(file_path):
         result.append(line)
     return result
 
-
-QUESION_QUANTITY = 8.0
-
 def changeAnswerType(n):
     global typeAns
     print(n)
@@ -71,8 +68,8 @@ keyboard4.row('Экономика', 'Политика', 'Аналитика')
 
 keyboard5.row('Online', 'Offline')
 
-keyboard6.row('Typescript', 'Python')
-keyboard6.row('C/C++', 'Go', 'Lisp')
+keyboard6.row('Typescript', 'Python', 'Lisp')
+keyboard6.row('C/C++', 'Go', 'Другой')
 
 keyboard7.row('Elementary', 'Intermediate')
 keyboard7.row('Upper intermediate', 'Advanced', 'Proficiency')
@@ -83,9 +80,15 @@ keyboard_return.add(btn_return)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     print('Username: {}, name: {}'.format(message.chat.username, message.chat.first_name))
-    string = 'Привет, {}, предлагаю пройти Тебе опрос, согласен?'.format(message.chat.first_name)
+    string = 'Привет, {}, предлагаю пройти Вам опрос, согласны?'.format(message.chat.first_name)
     changeAnswerType(1)
     bot.send_message(message.chat.id, string, reply_markup=keyboard1)
+
+def mess_end(message):
+    string = 'Привет, {}, предлагаю пройти Вам опрос, согласны?'.format(message.chat.first_name)
+    changeAnswerType(1)
+    bot.send_message(message.chat.id, string, reply_markup=keyboard1)
+
 
 @bot.message_handler(commands=['help'])
 def show(message):
@@ -148,37 +151,13 @@ def geophone(message):
         bot.register_next_step_handler(message, invite)
 
     def invite(message):
-        res = summarize / QUESION_QUANTITY * 100
-        if res > 79:
-            string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе. Результат: {}%. '.format(res*10)
+            string = 'Дорогой кандидат, приглашаем тебя на очное собеседование в нашем офисе.'
             string += 'Пришли свое местоположение, я скажу, насколько далеко ты от ближайшего офиса'
             bot.send_message(message.chat.id, string, reply_markup=keyboard_geo)
-        else:
-            string = 'Результат: {}%. Попытайся ещё раз'.format(res*10)
-            bot.send_message(message.chat.id, string, reply_markup=keyboard_return)
-
 
     if (message.text.lower() == 'да'):
-        summarize += 1
         if typeAns == 1:
             age(message)
-    elif message.text.replace('-', '') == '2126':
-        summarize += 1
-    
-    elif (message.text.lower() == 'offline'):
-        summarize += 1
-    elif (message.text.lower() == 'it') | (message.text.lower() == 'аналитика'):
-        summarize += 1
-    elif (message.text.lower() == 'планирую'):
-        summarize += 0.5
-    elif (message.text.lower() == 'мужчина'):
-        summarize += 0.5
-    elif (message.text.lower() == 'женщина'):
-        summarize += 0.5
-    elif (message.text.lower() == 'upper intermediate') | (message.text.lower() == 'advanced'):
-        summarize += 1
-    elif (message.text.lower() == 'typescript') | (message.text.lower() == 'lisp') | (message.text.lower() == 'go'):
-        summarize += 1  
     elif message.text.lower() == S.GO_TO_MAIN_MENU.lower():
         start_message(message)
 
