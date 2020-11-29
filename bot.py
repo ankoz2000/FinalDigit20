@@ -44,6 +44,9 @@ keyboard2        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboar
 keyboard3        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard4        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard5        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+keyboard6        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+keyboard7        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
+keyboard8        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard_geo     = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard_return  = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 keyboard11        = telebot.types.ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
@@ -66,8 +69,14 @@ keyboard3.add(btn_return)
 keyboard4.row('IT', 'Web design')
 keyboard4.row('Экономика', 'Политика', 'Аналитика')
 
-keyboard5.row('ВТБ', 'Сбербанк')
-keyboard5.row('Газпромбанк', 'Раффайзен банк')
+keyboard5.row('Online', 'Offline')
+
+keyboard6.row('Typescript', 'Python')
+keyboard6.row('C/C++', 'Go', 'Lisp')
+
+keyboard7.row('Elementary', 'Intermediate')
+keyboard7.row('Upper intermediate', 'Advanced', 'Proficiency')
+
 
 keyboard_return.add(btn_return)
 
@@ -124,7 +133,18 @@ def geophone(message):
 
     def championship(message):
         bot.send_message(message.chat.id, questions[7], reply_markup=keyboard1)
-        changeAnswerType(0)
+        bot.register_next_step_handler(message, progLang)
+
+    def progLang(message):
+        bot.send_message(message.chat.id, questions[8], reply_markup=keyboard6)
+        bot.register_next_step_handler(message, engLang)
+
+    def engLang(message):
+        bot.send_message(message.chat.id, questions[9], reply_markup=keyboard1)
+        bot.register_next_step_handler(message, level)
+
+    def engLang(message):
+        bot.send_message(message.chat.id, questions[10], reply_markup=keyboard7)
         bot.register_next_step_handler(message, invite)
 
     def invite(message):
@@ -145,7 +165,7 @@ def geophone(message):
     elif message.text.replace('-', '') == '2126':
         summarize += 1
     
-    elif (message.text.lower() == 'газпромбанк'):
+    elif (message.text.lower() == 'offline'):
         summarize += 1
     elif (message.text.lower() == 'it') | (message.text.lower() == 'аналитика'):
         summarize += 1
@@ -155,7 +175,10 @@ def geophone(message):
         summarize += 0.5
     elif (message.text.lower() == 'женщина'):
         summarize += 0.5
-
+    elif (message.text.lower() == 'upper intermediate') | (message.text.lower() == 'advanced'):
+        summarize += 1
+    elif (message.text.lower() == 'typescript') | (message.text.lower() == 'lisp') | (message.text.lower() == 'go'):
+        summarize += 1  
     elif message.text.lower() == S.GO_TO_MAIN_MENU.lower():
         start_message(message)
 

@@ -1,0 +1,38 @@
+#wrap {
+    border:"2px"; 
+    background-color: black;
+    border-radius: " 2px"
+}
+
+h1 {
+    font-size: 3em;
+}
+
+#page {
+    margin-top: 100px;
+  
+}
+
+#count {
+    border: 2px solid silver;
+    border-radius: 2px;
+   
+    background-color: rgb(228, 228, 228);
+    
+}
+
+.form-group {
+   margin: 20px;
+   
+}
+
+hr {
+    max-width: 80%;
+}
+.list-group {
+    padding-bottom: 10px;
+}
+
+h3 {
+    color: beige;
+}
